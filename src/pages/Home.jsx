@@ -51,15 +51,40 @@ const Home = () => {
 
   const handleCheckboxChange = async (row, check) => {
     if (check) {
+      console.log(row);
       const response = await fetch(`http://localhost:5000/api/fav/add`, {
         method: "POST",
-        body: JSON.stringify(row),
+        body: JSON.stringify({
+          userId: parseInt(localStorage.getItem("userId")),
+          universityname: row.name,
+          state: row?.["state-province"],
+          webpage: row?.["web_pages"][0],
+        }),
         headers: {
           "Content-Type": "application/json",
         },
       });
       console.log(response);
+      // setSearchResult((pre) =>
+      //   pre.map((data) =>
+      //     data.name === row.name ? (data.checked = true) : false
+      //   )
+      // );
       // const data = await response.json();
+    } else {
+      const response = await fetch(`http://localhost:5000/api/fav/remove`, {
+        method: "DELETE",
+        body: JSON.stringify({
+          userId: parseInt(localStorage.getItem("userId")),
+          universityname: row.name,
+          state: row?.["state-province"],
+          webpage: row?.["web_pages"][0],
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      console.log(response);
     }
   };
 
@@ -90,7 +115,7 @@ const Home = () => {
                 <tr key={i}>
                   <td>{row?.name}</td>
                   <td>{row?.["state-province"]}</td>
-                  <td>@{row?.["web_pages"][0]}</td>
+                  <td>{row?.["web_pages"][0]}</td>
                   <td>
                     <input
                       type="checkbox"

@@ -3,7 +3,7 @@ import { Table } from "react-bootstrap";
 
 const Favourite = () => {
   const [searchResult, setSearchResult] = useState([]);
-  const userId = localStorage.getItem("userId");
+  const userId = parseInt(localStorage.getItem("userId"));
   const [page, setPage] = useState(1);
   const perPage = 10;
   const goPre = () => {
@@ -38,25 +38,25 @@ const Favourite = () => {
             <th>Name</th>
             <th>state-province</th>
             <th>web_pages</th>
-            <th>favourite</th>
+            {/* <th>favourite</th> */}
           </tr>
         </thead>
         <tbody>
           {searchResult
             .slice((page - 1) * perPage, (page - 1) * perPage + perPage)
-            .map((row, i) => (
-              <tr key={i}>
-                <td>{row?.name}</td>
-                <td>{row?.["state-province"]}</td>
-                <td>@{row?.["web_pages"][0]}</td>
-                <td>
+            .map((row) => (
+              <tr key={row.id}>
+                <td>{row?.universityname}</td>
+                <td>{row?.state}</td>
+                <td>{row?.webpages}</td>
+                {/* <td>
                   <input
                     type="checkbox"
                     name="favourite"
                     checked={row.checked}
                     // onChange={(e) => handleCheckboxChange(i, e.target.checked)}
                   />
-                </td>
+                </td> */}
               </tr>
             ))}
         </tbody>

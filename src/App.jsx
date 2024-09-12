@@ -6,6 +6,7 @@ import Register from "./components/Register";
 import Home from "./pages/Home";
 import Favourite from "./pages/Favourite";
 import "bootstrap/dist/css/bootstrap.min.css";
+import Login from "./components/login";
 const Layout = () => {
   return (
     <>
@@ -33,6 +34,10 @@ const router = createBrowserRouter([
   {
     path: "/register",
     element: <Register />,
+  },
+  {
+    path: "/login",
+    element: <Login />,
   },
 ]);
 

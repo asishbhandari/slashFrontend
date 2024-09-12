@@ -1,6 +1,12 @@
 import { Link } from "react-router-dom";
 
 const Header = () => {
+  const token = localStorage.getItem("token");
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("userId");
+    window.location.href = "/"; // or redirect to login page
+  };
   return (
     <div className="d-flex justify-content-between ">
       <div>logo</div>
@@ -12,7 +18,18 @@ const Header = () => {
           <span>favourite</span>
         </Link>
         <span>user</span>
-        <span>logout</span>
+        {token ? (
+          <span onClick={handleLogout} style={{ cursor: "pointer" }}>
+            logout
+          </span>
+        ) : (
+          <span
+            onClick={() => (window.location.href = "/login")}
+            style={{ cursor: "pointer" }}
+          >
+            Login
+          </span>
+        )}
       </div>
     </div>
   );

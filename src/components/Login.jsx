@@ -2,14 +2,14 @@ import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 
-const Register = () => {
+const Login = () => {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const result = await fetch(`http://localhost:5000/api/user/register`, {
+      const result = await fetch(`http://localhost:5000/api/user/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -17,10 +17,15 @@ const Register = () => {
         body: JSON.stringify({ username: userName, password }),
       });
       const data = await result.json();
-      if (data.message === "User registered successfully")
-        alert("User registered successfully now login");
-      if (data.message === "Username already exists")
-        alert("Username already exists");
+      console.log(data);
+      if (data.message === "User not found")
+        alert("User not found register first");
+      if (data.token) {
+        localStorage.setItem("token", data?.token);
+        localStorage.setItem("userId", data?.user?.id);
+        alert("Login successful");
+        window.location.href = "/";
+      }
     } catch (error) {
       console.log(error);
     }
@@ -45,14 +50,14 @@ const Register = () => {
           />
         </Form.Group>
         <Button variant="primary" type="submit" onClick={handleSubmit}>
-          Register
+          Login
         </Button>
         <p>
-          Already have an account? <a href="/login">Login</a>
+          Dont have an account? <a href="/register">Register</a>
         </p>
       </Form>
     </div>
   );
 };
 
-export default Register;
+export default Login;
