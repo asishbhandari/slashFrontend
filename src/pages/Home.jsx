@@ -14,7 +14,8 @@ const Home = () => {
           `http://universities.hipolabs.com/search?country=India`
         );
         const data = await result.json();
-        setSearchResult(data);
+        const newData = data.map((a) => ({ ...a, checked: false }));
+        setSearchResult(newData);
       } catch (error) {
         console.log(error);
       }
@@ -28,7 +29,8 @@ const Home = () => {
         `http://universities.hipolabs.com/search?name=${searchText}&country=India`
       );
       const data = await response.json();
-      setSearchResult(data);
+      const newData = data.map((a) => ({ ...a, checked: false }));
+      setSearchResult(newData);
       SetSearchText("");
       console.log(data);
     } catch (error) {
@@ -46,6 +48,7 @@ const Home = () => {
       setPage(page + 1);
     }
   };
+
   return (
     <div className="mt-4">
       <div className="d-flex gap-2">
@@ -75,7 +78,14 @@ const Home = () => {
                   <td>{row?.["state-province"]}</td>
                   <td>@{row?.["web_pages"][0]}</td>
                   <td>
-                    <input type="checkbox" name="favourite" />
+                    <input
+                      type="checkbox"
+                      name="favourite"
+                      checked={row.checked}
+                      onChange={(e) =>
+                        handleCheckboxChange(i, e.target.checked)
+                      }
+                    />
                   </td>
                 </tr>
               ))}
