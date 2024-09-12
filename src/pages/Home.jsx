@@ -49,6 +49,20 @@ const Home = () => {
     }
   };
 
+  const handleCheckboxChange = async (row, check) => {
+    if (check) {
+      const response = await fetch(`http://localhost:5000/api/fav/add`, {
+        method: "POST",
+        body: JSON.stringify(row),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      console.log(response);
+      // const data = await response.json();
+    }
+  };
+
   return (
     <div className="mt-4">
       <div className="d-flex gap-2">
@@ -83,7 +97,7 @@ const Home = () => {
                       name="favourite"
                       checked={row.checked}
                       onChange={(e) =>
-                        handleCheckboxChange(i, e.target.checked)
+                        handleCheckboxChange(row, e.target.checked)
                       }
                     />
                   </td>
