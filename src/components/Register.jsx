@@ -26,7 +26,7 @@ const Register = () => {
     }
   };
   return (
-    <div className="w-50 d-flex ">
+    <div className=" login ">
       <Form className="d-flex flex-column">
         <Form.Group className="mb-3 d-flex">
           <Form.Label>Username</Form.Label>

@@ -7,7 +7,19 @@ import Home from "./pages/Home";
 import Favourite from "./pages/Favourite";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Login from "./components/login";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+
 const Layout = () => {
+  const token = localStorage.getItem("token");
+  console.log(token);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!token) {
+      navigate("/login");
+    }
+  }, [token, navigate]);
   return (
     <>
       <Header />

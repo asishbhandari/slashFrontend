@@ -10,3 +10,11 @@
   border: 1px solid blue;
   padding: 0.5rem 1rem;
 }
+
+.login {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+}

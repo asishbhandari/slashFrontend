@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { Button, FormControl, Table } from "react-bootstrap";
+import { Button, FormControl, Table, FormCheck } from "react-bootstrap";
 
 const Home = () => {
   const [searchText, SetSearchText] = useState("");
   const [searchResult, setSearchResult] = useState([]);
   const [page, setPage] = useState(1);
   const perPage = 10;
+  const userId = parseInt(localStorage.getItem("userId"));
 
   useEffect(() => {
     const fetchAll = async () => {
@@ -14,8 +15,21 @@ const Home = () => {
           `http://universities.hipolabs.com/search?country=India`
         );
         const data = await result.json();
-        const newData = data.map((a) => ({ ...a, checked: false }));
+        const response = await fetch(
+          `http://localhost:5000/api/fav/all?userId=${userId}`,
+          {
+            method: "GET",
+          }
+        );
+        const fav = await response.json();
+        console.log(fav);
+        const newData = data.map((a) =>
+          fav.find((n) => n.universityname === a.name)
+            ? { ...a, checked: true }
+            : { ...a, checked: false }
+        );
         setSearchResult(newData);
+        // console.log(searchResult);
       } catch (error) {
         console.log(error);
       }
@@ -32,7 +46,6 @@ const Home = () => {
       const newData = data.map((a) => ({ ...a, checked: false }));
       setSearchResult(newData);
       SetSearchText("");
-      console.log(data);
     } catch (error) {
       console.error(error);
     }
@@ -51,26 +64,30 @@ const Home = () => {
 
   const handleCheckboxChange = async (row, check) => {
     if (check) {
-      console.log(row);
+      const webpage = row?.["web_pages"][0].toString();
       const response = await fetch(`http://localhost:5000/api/fav/add`, {
         method: "POST",
         body: JSON.stringify({
           userId: parseInt(localStorage.getItem("userId")),
           universityname: row.name,
           state: row?.["state-province"],
-          webpage: row?.["web_pages"][0],
+          webpage: webpage,
         }),
         headers: {
           "Content-Type": "application/json",
         },
       });
-      console.log(response);
-      // setSearchResult((pre) =>
-      //   pre.map((data) =>
-      //     data.name === row.name ? (data.checked = true) : false
-      //   )
-      // );
-      // const data = await response.json();
+      // University already added to favourites
+      const data = await response.json();
+      if (data?.message == "University already added to favourites")
+        alert(data.message);
+      else {
+        setSearchResult((pre) =>
+          pre.map((data) =>
+            data.name === row.name ? { ...data, checked: true } : { ...data }
+          )
+        );
+      }
     } else {
       const response = await fetch(`http://localhost:5000/api/fav/remove`, {
         method: "DELETE",
@@ -84,7 +101,12 @@ const Home = () => {
           "Content-Type": "application/json",
         },
       });
-      console.log(response);
+      console.log("else wala response: ", response);
+      setSearchResult((pre) =>
+        pre.map((data) =>
+          data.name === row.name ? { ...data, checked: false } : { ...data }
+        )
+      );
     }
   };
 
@@ -117,10 +139,10 @@ const Home = () => {
                   <td>{row?.["state-province"]}</td>
                   <td>{row?.["web_pages"][0]}</td>
                   <td>
-                    <input
+                    <FormCheck
                       type="checkbox"
                       name="favourite"
-                      checked={row.checked}
+                      checked={row?.checked}
                       onChange={(e) =>
                         handleCheckboxChange(row, e.target.checked)
                       }
